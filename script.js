@@ -21,7 +21,7 @@ const FOODS = [
     description: "Creamy Alfredo Pasta",
     quantity: 40,
     price: 220,
-    category: 1,
+    category: 2,
   },
   {
     id: 4,
@@ -42,7 +42,7 @@ const FOODS = [
   {
     id: 6,
     name: "Plov",
-    description: "Tashken Plov",
+    description: "Tashkent Plov",
     quantity: 30,
     price: 340,
     category: 2,
@@ -56,31 +56,40 @@ const CATEGORIES = [
   },
   {
     id: 2,
-    name: "traditionally",
+    name: "traditional",
   },
 ];
 
 function ShowListFoods() {
-  let str = "==== WELCOME ==== \n";
+  let str = "==== WELCOME ====\n";
 
   FOODS.forEach((item) => {
-    str += `ID: ${item.id}, name: ${item.name} \n`;
+    str += `ID: ${item.id}, Name: ${item.name}\n`;
   });
 
-  str += `\n' +1 ' = create`;
+  str += "\n+1 = Create";
 
   let result = prompt(str);
 
-  if(result === "+1") {
-    CreateFood()
+  if (result === "+1") {
+    CreateFood();
+    return;
   }
+
+  result = +result;
+
+  FOODS.forEach((item) => {
+    if (item.id === result) {
+      readFood(item);
+    }
+  });
 }
 
 ShowListFoods();
 
 function CreateFood() {
-  const name = prompt("Write name of food");
-  const price = +prompt("Write price of food");
+  const name = prompt("Write name of the food");
+  const price = +prompt("Write price of the food");
   const description = prompt("Write description");
   const quantity = +prompt("Write quantity");
 
@@ -90,51 +99,116 @@ function CreateFood() {
     price,
     quantity,
     description,
-    category: SelectCategory("Select Category")
+    category: SelectCategory("Select Category"),
   };
 
+  alert(`New food "${newFood.name}" created`);
+  FOODS.push(newFood);
 
-  alert(`New foods ${newFood.name} created`)
-
-
-  FOODS.push(newFood)
-
-  ShowListFoods()
-
-
-
+  ShowListFoods();
 }
 
+function SelectCategory(title, defaultValue = "") {
+  let str = `==== ${title} ====\n`;
+
+  CATEGORIES.forEach((item) => {
+    str += `ID: ${item.id}, Name: ${item.name}\n`;
+  });
+
+  let result = +prompt(str, defaultValue);
+
+  let currentCategory = CATEGORIES.find(item => item.id === result)
 
 
-function SelectCategory (title, defaultValue = "") {
 
-    let str = `==== ${title} ==== \n`
 
-    CATEGORIES.forEach(item => {
-        str += `ID: ${item.id}, name: ${item.name} \n`
-    })
+  if (!currentCategory) {
+    alert("Select correctly");
+    return SelectCategory(title, defaultValue);
+  }
 
-    let result = +prompt(str, defaultValue)
-
-    if(!result) {
-        alert("Select correctly")
-        SelectCategory(str, defaultValue)
-    }
-
-    return result
+  return currentCategory.id;
 }
-
 
 function GetUniqueId(values) {
-    let num = 0
+  let num = 0;
 
-    values.forEach(item => {
-        if(num <= item.id) {
-            num = item.id + 1
-        }
-    })
+  values.forEach((item) => {
+    if (num <= item.id) {
+      num = item.id + 1;
+    }
+  });
+
+  return num;
+}
+
+function readFood(food) {
+  let str = `=== Details about the Food ===\n\n`;
+  str += `Id: ${food.id}\n`;
+  str += `Name: ${food.name}\n`;
+  str += `Price: ${food.price}\n`;
+  str += `Description: ${food.description}\n`;
+  str += `Quantity: ${food.quantity}\n`;
+  str += `Category: ${food.category}\n\n`;
+  str += `-1 = Back\n`;
+  str += `+1 = Update\n`;
+  str += `0 = Delete Food`;
+
+  let result = prompt(str);
+
+  if (result === "-1") {
+    ShowListFoods();
+  } else if (result === "+1") {
+    updateFood(food);
+  } else if (result === "0") {
+    deleteFood(food);
+  }
+}
+
+function updateFood(food) {
+  const name = prompt("Write new name of the food", food.name);
+  const price = +prompt("Write new price of the food", food.price);
+  const description = prompt("Write new description", food.description);
+  const quantity = +prompt("Write new quantity", food.quantity);
+  const category = SelectCategory("Select Category", food.category);
+
+  if (!name || !description || !quantity || !category) {
+    alert("Введите корректные данные");
+    updateFood(food);
+    return;
+  } else if (!price || isNaN(price) || Number(price) <= 0) {
+    alert("Введите цену правильно");
+    updateFood(food);
+    return;
+  }else if(!quantity || isNaN(quantity) || Number(quantity) <= 0) {
+    alert("Введите правильное количество");
+    updateFood(food);
+  }
+
+  food.name = name;
+  food.price = price;
+  food.description = description;
+  food.quantity = quantity;
+  food.category = category;
+
+  alert(`Food "${food.name}" was updated successfully!`);
+
+  ShowListFoods();
+}
+
+function deleteFood(food) {
+  let result = confirm("Are you sure you want to delete this food?");
+
+  if (!result) {
+    readFood(food);
+    return;
+  }
 
 
-    return num
+  const currentIndex = FOODS.findIndex((item) => item.id === food.id);
+  FOODS.splice(currentIndex, 1);
+
+  alert("Food deleted successfully!");
+
+  ShowListFoods();
 }
