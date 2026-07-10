@@ -92,6 +92,7 @@ function createSession(filmId, hallId, placesCount, startDate) {
   }
 
   let hello = ''
+  const o ="hi"
 
 }
 createSession(836217356271, 3, 20, "2026-06-25T10:00:00.686Z") // "2026-06-26T12:30:00.686Z"
