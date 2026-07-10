@@ -81,7 +81,7 @@ function createSession(filmId, hallId, placesCount, startDate) {
 
   let currentFilm = films.find(item => item.id === filmId)
 
-  if(!currentFilm) {
+  if (!currentFilm) {
     let str = ""
     films.forEach(item => {
       str += `id: ${item.id}, name: ${item.name} \n`
@@ -89,9 +89,9 @@ function createSession(filmId, hallId, placesCount, startDate) {
     console.log(`Такого фильма не существует, выберите другой фильм`)
     console.table(films)
     return
-  } 
+  }
 
-
+  let hello = ''
 
 }
 createSession(836217356271, 3, 20, "2026-06-25T10:00:00.686Z") // "2026-06-26T12:30:00.686Z"
