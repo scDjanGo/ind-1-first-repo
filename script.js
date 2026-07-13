@@ -58,40 +58,62 @@ let sessions = [
     endDate: "2026-06-25T12:30:00.686Z",
     places: 15,
   },
-  {
-    id: 2,
-    filmId: 1,
-    hallId: 3,
-    startDate: "2026-06-25T10:00:00.686Z",
-    endDate: "2026-06-25T12:30:00.686Z",
-    places: 10,
-  },
-  {
-    id: 3,
-    filmId: 2,
-    hallId: 3,
-    startDate: "2026-06-25T10:00:00.686Z",
-    endDate: "2026-06-25T12:30:00.686Z",
-    places: 10,
-  },
 ];
+
+
 
 
 function createSession(filmId, hallId, placesCount, startDate) {
 
-  let currentFilm = films.find(item => item.id === filmId)
+  let currentFilm = films.find(item => item.id === filmId);
 
-  if(!currentFilm) {
-    let str = ""
-    films.forEach(item => {
-      str += `id: ${item.id}, name: ${item.name} \n`
-    })
-    console.log(`Такого фильма не существует, выберите другой фильм`)
-    console.table(films)
-    return
-  } 
+  if (!currentFilm) {
+    console.log("Такого фильма не существует");
+    return;
+  }
 
 
+  let duration = currentFilm.duration;
 
+
+  let hours = Number(duration[0]);
+  let minutes = Number(duration[2] + duration[3]);
+  let seconds = Number(duration[5] + duration[6]);
+
+
+  let durationInMs =
+    ((hours * 60 + minutes) * 60 + seconds) * 1000;
+
+
+  let endDate = new Date(startDate);
+
+  endDate.setTime(
+    endDate.getTime() + durationInMs
+  );
+
+
+  let newSession = {
+    id: sessions.length + 1,
+    filmId: filmId,
+    hallId: hallId,
+    startDate: startDate,
+    endDate: endDate.toISOString(),
+    places: placesCount,
+  };
+
+  console.log(`
+Фильм: ${currentFilm.name}
+Зал: ${hallId}
+Начало: ${new Date(startDate).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+Конец: ${endDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+Мест: ${placesCount}
+`);
+
+  sessions.push(newSession);
+
+  console.log(newSession);
 }
-createSession(836217356271, 3, 20, "2026-06-25T10:00:00.686Z") // "2026-06-26T12:30:00.686Z"
+
+
+
+createSession(1, 3, 7, "2026-06-25T13:00:00.686Z")
