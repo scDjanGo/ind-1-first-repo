@@ -77,6 +77,7 @@ let sessions = [
 
 
 
+
 function createSession(filmId, hallId, placesCount, startDate) {
     let currentFilm = films.find(item => item.id === filmId);
     if (!currentFilm) {
@@ -108,6 +109,7 @@ function createSession(filmId, hallId, placesCount, startDate) {
 
     let duration = hours * 3600000 + minutes * 60000 + seconds * 1000;
     let end = new Date(start.getTime() + duration);
+
 
     let isBusy = sessions.some(session => {
         if (session.hallId !== hallId) {
@@ -142,3 +144,4 @@ function createSession(filmId, hallId, placesCount, startDate) {
 
 createSession(2, 1, 20, "2026-06-25T15:00:00.686Z");
 createSession(3, 3, 15, "2026-06-25T18:00:00.686Z");
+
